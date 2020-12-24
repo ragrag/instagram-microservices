@@ -13,6 +13,8 @@ import dbConnection from './db/connection';
 import Routes from './common/interfaces/routes.interface';
 import errorMiddleware from './api/middlewares/error.middleware';
 import { logger, stream } from './common/utils/logger';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import RabbitMQService from './services/rabbitmq.service';
 
 class App {
   public app: express.Application;
@@ -25,6 +27,7 @@ class App {
     this.env = process.env.NODE_ENV || 'development';
 
     this.connectToDatabase();
+    this.initializeRabbitMQ();
     this.initializeMiddlewares();
     this.initializeRoutes(routes);
     this.initializeSwagger();
@@ -49,6 +52,10 @@ class App {
       .catch((error: Error) => {
         logger.error(`🔴 Unable to connect to the database: ${error}.`);
       });
+  }
+
+  private initializeRabbitMQ() {
+    RabbitMQService.getInstance();
   }
 
   private initializeMiddlewares() {

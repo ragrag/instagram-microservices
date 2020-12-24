@@ -20,12 +20,13 @@ class AuthService {
       ],
     });
 
-    if (findUser.email === createUserDTO.email) throw Boom.conflict(`Email ${createUserDTO.email} already exists`);
-    if (findUser.username === createUserDTO.username) throw Boom.conflict(`Username ${createUserDTO.username} already exists`);
-
+    if (findUser) {
+      if (findUser.email === createUserDTO.email) throw Boom.conflict(`Email ${createUserDTO.email} already exists`);
+      if (findUser.username === createUserDTO.username) throw Boom.conflict(`Username ${createUserDTO.username} already exists`);
+    }
     const hashedPassword = await bcrypt.hash(createUserDTO.password, 10);
     const createdUserData: User = await User.save({ ...createUserDTO, password: hashedPassword } as User);
-    eventEmitter.emit(Events.USER_REGISTRATION, { email: createUserDTO.email });
+    eventEmitter.emit(Events.USER_CREATED, { email: createUserDTO.email });
     return createdUserData;
   }
 

@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 
 enum Events {
-  USER_REGISTRATION = 'user-registered',
+  USER_CREATED = 'user-created',
 }
 const eventEmitter = new EventEmitter();
 

@@ -17,6 +17,6 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
   },
-  "include": ["./src/**/*", ".env"],
+  "include": ["./src/**/*", ".env", "controllers"],
   "exclude": ["node_modules"]
 }
