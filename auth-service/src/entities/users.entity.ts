@@ -1,4 +1,15 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, Unique, CreateDateColumn, UpdateDateColumn, ManyToMany, JoinTable } from 'typeorm';
+import {
+  BaseEntity,
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  Unique,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToMany,
+  JoinTable,
+  Index,
+} from 'typeorm';
 
 @Entity()
 @Unique(['email'])
@@ -10,6 +21,7 @@ export class User extends BaseEntity {
   email: string;
 
   @Column({ nullable: false })
+  @Index()
   username: string;
 
   @Column({ nullable: false })

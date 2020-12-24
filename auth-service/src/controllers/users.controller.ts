@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { UpdateUserDTO } from '../common/dtos';
+import { UpdateUserDTO, UpdateUserPasswordDTO } from '../common/dtos';
 import { RequestWithUser } from '../common/interfaces/auth.interface';
 import { User } from '../entities/users.entity';
 import userService from '../services/users.service';
@@ -32,6 +32,20 @@ class UsersController {
       const { displayName, photo, profileBio }: UpdateUserDTO = req.body;
       const updateUserDTO: UpdateUserDTO = { displayName, photo, profileBio };
       await this.userService.updateUser(userId, updateUserDTO);
+
+      res.status(200).json();
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public updateUserPassoword = async (req: RequestWithUser, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const userId = Number(req.user.id);
+      const { oldPassword, newPassword }: UpdateUserPasswordDTO = req.body;
+
+      const updateUserPasswordDTO: UpdateUserPasswordDTO = { oldPassword, newPassword };
+      await this.userService.updateUserPassword(userId, updateUserPasswordDTO);
 
       res.status(200).json();
     } catch (error) {

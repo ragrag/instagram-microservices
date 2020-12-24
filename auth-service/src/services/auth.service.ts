@@ -11,8 +11,17 @@ class AuthService {
   public async signup(createUserDTO: CreateUserDTO): Promise<User> {
     if (isEmpty(createUserDTO)) throw Boom.badRequest();
 
-    const findUser: User = await User.findOne({ where: { email: createUserDTO.email } });
-    if (findUser) throw Boom.conflict(`Email ${createUserDTO.email} already exists`);
+    const findUser: User = await User.findOne({
+      where: [
+        { email: createUserDTO.email },
+        {
+          username: createUserDTO.username,
+        },
+      ],
+    });
+
+    if (findUser.email === createUserDTO.email) throw Boom.conflict(`Email ${createUserDTO.email} already exists`);
+    if (findUser.username === createUserDTO.username) throw Boom.conflict(`Username ${createUserDTO.username} already exists`);
 
     const hashedPassword = await bcrypt.hash(createUserDTO.password, 10);
     const createdUserData: User = await User.save({ ...createUserDTO, password: hashedPassword } as User);
@@ -21,8 +30,15 @@ class AuthService {
   }
 
   public async login(loginUserDTO: LoginUserDTO): Promise<{ token: string; findUser: User }> {
-    if (isEmpty(loginUserDTO)) throw Boom.badRequest();
-    const findUser: User = await User.findOne({ where: { email: loginUserDTO.email } });
+    console.log(loginUserDTO);
+    const findUser: User = await User.findOne({
+      where: [
+        { email: loginUserDTO.email },
+        {
+          username: loginUserDTO.username,
+        },
+      ],
+    });
     if (!findUser) throw Boom.notFound();
 
     const isPasswordMatching: boolean = await bcrypt.compare(loginUserDTO.password, findUser.password);
