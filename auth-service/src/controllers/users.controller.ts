@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
-import { CreateUserDTO } from '../common/dtos';
+import { UpdateUserDTO } from '../common/dtos';
+import { RequestWithUser } from '../common/interfaces/auth.interface';
 import { User } from '../entities/users.entity';
 import userService from '../services/users.service';
 
@@ -9,16 +10,6 @@ class UsersController {
   public getUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       res.status(200).json({ ...req.user });
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  public getUsers = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    try {
-      const findAllUsersData: User[] = await this.userService.findAllUser();
-
-      res.status(200).json({ data: findAllUsersData, message: 'findAll' });
     } catch (error) {
       next(error);
     }
@@ -35,24 +26,14 @@ class UsersController {
     }
   };
 
-  public createUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  public updateUser = async (req: RequestWithUser, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const userData: CreateUserDTO = req.body;
-      const createUserData: User = await this.userService.createUser(userData);
+      const userId = Number(req.user.id);
+      const { displayName, photo, profileBio }: UpdateUserDTO = req.body;
+      const updateUserDTO: UpdateUserDTO = { displayName, photo, profileBio };
+      await this.userService.updateUser(userId, updateUserDTO);
 
-      res.status(201).json({ data: createUserData, message: 'created' });
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  public updateUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    try {
-      const userId = Number(req.params.id);
-      const userData: User = req.body;
-      const updateUserData: User = await this.userService.updateUser(userId, userData);
-
-      res.status(200).json({ data: updateUserData, message: 'updated' });
+      res.status(200).json();
     } catch (error) {
       next(error);
     }

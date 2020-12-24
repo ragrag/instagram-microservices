@@ -8,9 +8,10 @@ import AuthService from '../services/auth.service';
 class AuthController {
   public authService = new AuthService();
 
-  public signUp = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  public signup = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const createUserDTO: CreateUserDTO = req.body;
+      const { username, email, password }: CreateUserDTO = req.body;
+      const createUserDTO: CreateUserDTO = { username, email, password };
       const signedUpUser: User = await this.authService.signup(createUserDTO);
       const { token } = await this.authService.createToken(signedUpUser);
 
@@ -28,7 +29,7 @@ class AuthController {
     }
   };
 
-  public logIn = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  public login = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const loginUserDTO: LoginUserDTO = req.body;
       const { token, findUser } = await this.authService.login(loginUserDTO);

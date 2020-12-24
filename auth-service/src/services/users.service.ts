@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { CreateUserDTO } from '../common/dtos';
+import { CreateUserDTO, UpdateUserDTO } from '../common/dtos';
 import * as Boom from '@hapi/boom';
 
 import { User } from '../entities/users.entity';
@@ -30,17 +30,13 @@ class UserService {
     return createUserData;
   }
 
-  public async updateUser(userId: number, userData: User): Promise<User> {
-    if (isEmpty(userData)) throw Boom.badRequest();
+  public async updateUser(userId: number, updateUserDTO: UpdateUserDTO): Promise<void> {
+    if (isEmpty(updateUserDTO)) throw Boom.badRequest();
 
     const findUser: User = await User.findOne({ where: { id: userId } });
     if (!findUser) throw Boom.notFound();
 
-    const hashedPassword = await bcrypt.hash(userData.password, 10);
-    await User.update(userId, { ...userData, password: hashedPassword });
-
-    const updateUser: User = await User.findOne({ where: { id: userId } });
-    return updateUser;
+    await User.update(userId, { ...updateUserDTO });
   }
 
   public async deleteUser(userId: number): Promise<User> {

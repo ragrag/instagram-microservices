@@ -1,6 +1,8 @@
 tags:
 - name: Authentication
-  description: User Authentication
+  description: Authentication
+- name: User
+  description: User
 
 host: http://localhost:3005
 basePath: /api/v1
@@ -15,26 +17,28 @@ paths:
       tags:
       - Authentication
       summary: Registration
-      parameters:
-      - name: body
-        in: body
-        description: User Registration
-        required: true
-        schema:
-          type: object
-          properties:
-            email:
-              type: string
-              description: user email
-            username:
-              type: string
-              description: username
-            password:
-              type: string
-              description: user password
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: user email
+                username:
+                  type: string
+                  description: username
+                password:
+                  type: string
+                  description: user password
       responses:
         201:
           description: 'Created'
+          content:
+            application/json:
+              schema:
+                 $ref: '#/components/schemas/UserWithToken'
         400:
           description: 'Bad Request'
         401:
@@ -47,20 +51,62 @@ paths:
       tags:
       - Authentication
       summary: Login
-      parameters:
-      - name: body
-        in: body
-        description: User Login
-        required: true
-        schema:
-          type: object
-          properties:
-            email:
-              type: string
-              description: user email
-            password:
-              type: string
-              description: user password
+      requestBody:
+        content:
+          application/json:
+            schema:
+              anyOf:
+              - type: object
+                properties:
+                  email:
+                    type: string
+                    description: user email
+                  password:
+                    type: string
+                    description: user password
+              - type: object
+                properties:
+                  username:
+                    type: string
+                    description: username
+                  password:
+                    type: string
+                    description: user password
+      responses:
+        200:
+          description: 'Created'
+          content:
+            application/json:
+              schema:
+                 $ref: '#/components/schemas/UserWithToken'
+        400:
+          description: 'Bad Request'
+        404:
+          description: 'Not Found'
+
+  /api/v1/users:
+    put:
+      tags:
+      - User
+      summary: Update User 
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                displayName:
+                  type: string
+                  description: user displayName
+                profileBio:
+                  type: string
+                  description: user description
+                photo:
+                  type: string
+                  format: base64
+                  description: user photo
       responses:
         200:
           description: 'Success'
@@ -69,20 +115,41 @@ paths:
         404:
           description: 'Not Found'
 
+securitySchemes:
+  bearerAuth:            # arbitrary name for the security scheme
+    type: http
+    scheme: bearer
+    bearerFormat: JWT    # optio
 
 # definitions
-definitions:
-  user:
-    type: object
-    required:
-        - email
-        - password
-    properties:
-      email:
-        type: string
-        description: user Email
-      password:
-        type: string
-        description: user Password
-        
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        username:
+          type: string
+        displayName:
+          type: string
+        profileBio:
+          type: string
+        photo:
+          type: string
+        verified:  
+          type: string
 
+
+    UserWithToken:
+      allOf:     
+        - $ref: '#/components/schemas/User'
+        - type: object
+          properties:
+            token:
+              type: string
+
+
+            

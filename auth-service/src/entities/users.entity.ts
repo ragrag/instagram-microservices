@@ -1,5 +1,4 @@
 import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, Unique, CreateDateColumn, UpdateDateColumn, ManyToMany, JoinTable } from 'typeorm';
-import { IsNotEmpty } from 'class-validator';
 
 @Entity()
 @Unique(['email'])
