@@ -39,7 +39,8 @@ class MessageBroker {
     await this.producer.connect();
   }
   public async processMsg(msg: string) {
-    await new Promise(resolve => setTimeout(resolve, 5000));
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    throw new Error();
   }
   public async initializeConsumer() {
     this.consumer = this.kafka.consumer({ groupId: 'email-service', allowAutoTopicCreation: true });
@@ -49,15 +50,22 @@ class MessageBroker {
 
     await this.consumer.run({
       eachBatchAutoResolve: false,
-      eachBatch: async ({ batch, resolveOffset, heartbeat, isRunning, isStale }) => {
+      eachBatch: async ({ batch, resolveOffset, heartbeat, isRunning, isStale, uncommittedOffsets }) => {
         for (const message of batch.messages) {
-          console.log('new msg');
-          console.log({
-            topic: batch.topic,
-            value: message.value.toString(),
-          });
-          await this.processMsg(message.value.toString());
-          resolveOffset(message.offset);
+          if (isStale) {
+          }
+          try {
+            console.log('new msg');
+            console.log({
+              topic: batch.topic,
+              value: message.value.toString(),
+            });
+            await this.processMsg(message.value.toString());
+            resolveOffset(message.offset);
+          } catch (err) {
+            console.log('Failed');
+            // resolveOffset(message.offset);
+          }
         }
       },
     });
