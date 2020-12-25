@@ -14,7 +14,7 @@ import Routes from './common/interfaces/routes.interface';
 import errorMiddleware from './api/middlewares/error.middleware';
 import { logger, stream } from './common/utils/logger';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import RabbitMQService from './services/rabbitmq.service';
+import MessageBrokerService from './services/messageBroker.service';
 
 class App {
   public app: express.Application;
@@ -55,7 +55,7 @@ class App {
   }
 
   private initializeRabbitMQ() {
-    RabbitMQService.getInstance();
+    MessageBrokerService.getInstance();
   }
 
   private initializeMiddlewares() {

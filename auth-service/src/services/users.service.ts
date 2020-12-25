@@ -4,12 +4,12 @@ import * as Boom from '@hapi/boom';
 import { eventEmitter, Events } from '../common/utils/eventEmitter';
 import { User } from '../entities/users.entity';
 import { isEmpty } from '../common/utils/util';
-import RabbitMQService from './rabbitmq.service';
+import MessageBrokerService from './messageBroker.service';
 
 class UserService {
   constructor() {
     eventEmitter.on(Events.USER_CREATED, ({ email }) => {
-      RabbitMQService.getInstance().sendToEmailChannel({ type: Events.USER_CREATED, value: email });
+      MessageBrokerService.getInstance().sendEvent({ topic: Events.USER_CREATED, value: email });
     });
   }
 

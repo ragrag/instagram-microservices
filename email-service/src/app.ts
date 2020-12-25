@@ -12,7 +12,7 @@ import Routes from './common/interfaces/routes.interface';
 import errorMiddleware from './api/middlewares/error.middleware';
 import { logger, stream } from './common/utils/logger';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import RabbitMQService from './services/rabbitmq.service';
+import MessageBroker from './services/messageBroker.service';
 
 class App {
   public app: express.Application;
@@ -24,7 +24,7 @@ class App {
     this.port = process.env.PORT || 3000;
     this.env = process.env.NODE_ENV || 'development';
 
-    this.initializeRabbitMQ();
+    this.initializeMessageBroker();
     this.initializeMiddlewares();
     this.initializeRoutes(routes);
     this.initializeSwagger();
@@ -41,8 +41,8 @@ class App {
     return this.app;
   }
 
-  private initializeRabbitMQ() {
-    RabbitMQService.getInstance();
+  private initializeMessageBroker() {
+    MessageBroker.getInstance();
   }
 
   private initializeMiddlewares() {
