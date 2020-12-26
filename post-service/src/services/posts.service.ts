@@ -16,7 +16,7 @@ class PostsService {
 
   constructor() {
     eventEmitter.on(this.Events.POST_CREATED, post => {
-      MessageBrokerService.getInstance().sendEvent({ topic: this.Events.POST_CREATED, value: JSON.stringify({ ...post }) });
+      MessageBrokerService.getInstance().sendEvent({ topic: this.Events.POST_CREATED, value: JSON.stringify({ ...post }, null, 2) });
     });
   }
 
