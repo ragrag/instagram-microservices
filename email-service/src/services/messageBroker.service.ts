@@ -1,6 +1,9 @@
+import { JsonWebTokenError } from 'jsonwebtoken';
 import { Consumer, Kafka, logLevel, Producer } from 'kafkajs';
+import { Event } from '../common/interfaces/Event.interface';
 import { KafkaEvent } from '../common/interfaces/kafkaEvent';
 import { logger } from '../common/utils/logger';
+import EventHandler from './eventHandler.service';
 
 class MessageBroker {
   private static instance: MessageBroker;
@@ -46,7 +49,9 @@ class MessageBroker {
     this.consumer = this.kafka.consumer({ groupId: 'email-service', allowAutoTopicCreation: true });
     await this.consumer.connect();
 
-    await this.consumer.subscribe({ topic: 'user-created', fromBeginning: true });
+    for (const [eventTopic] of EventHandler.events) {
+      await this.consumer.subscribe({ topic: eventTopic, fromBeginning: true });
+    }
 
     await this.consumer.run({
       eachBatchAutoResolve: false,
@@ -60,10 +65,11 @@ class MessageBroker {
               topic: batch.topic,
               value: message.value.toString(),
             });
-            await this.processMsg(message.value.toString());
+            await EventHandler.handleEvent(batch.topic, { ...JSON.parse(message.value.toString()) });
+            // this.processMsg(message.value.toString());
             resolveOffset(message.offset);
           } catch (err) {
-            console.log('Failed');
+            console.log('Failed', batch.topic, JSON.parse(message.value.toString()));
             // resolveOffset(message.offset);
           }
         }

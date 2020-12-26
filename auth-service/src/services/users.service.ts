@@ -1,15 +1,19 @@
 import bcrypt from 'bcrypt';
 import { CreateUserDTO, UpdateUserDTO, UpdateUserPasswordDTO } from '../common/dtos';
 import * as Boom from '@hapi/boom';
-import { eventEmitter, Events } from '../common/utils/eventEmitter';
+import { eventEmitter } from '../common/utils/eventEmitter';
 import { User } from '../entities/users.entity';
 import { isEmpty } from '../common/utils/util';
 import MessageBrokerService from './messageBroker.service';
 
 class UserService {
+  private Events = {
+    USER_CREATED: 'UserCreated',
+  };
+
   constructor() {
-    eventEmitter.on(Events.USER_CREATED, ({ email }) => {
-      MessageBrokerService.getInstance().sendEvent({ topic: Events.USER_CREATED, value: email });
+    eventEmitter.on(this.Events.USER_CREATED, ({ email }) => {
+      MessageBrokerService.getInstance().sendEvent({ topic: this.Events.USER_CREATED, value: JSON.stringify({ email }) });
     });
   }
 
@@ -33,7 +37,7 @@ class UserService {
 
     const hashedPassword = await bcrypt.hash(userData.password, 10);
     const createdUser: User = await User.save({ ...userData, password: hashedPassword } as User);
-    eventEmitter.emit(Events.USER_CREATED, createdUser.email);
+    eventEmitter.emit(this.Events.USER_CREATED, createdUser.email);
     return createdUser;
   }
 

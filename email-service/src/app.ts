@@ -13,6 +13,7 @@ import errorMiddleware from './api/middlewares/error.middleware';
 import { logger, stream } from './common/utils/logger';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import MessageBroker from './services/messageBroker.service';
+import EmailService from './services/email.service';
 
 class App {
   public app: express.Application;
@@ -24,6 +25,7 @@ class App {
     this.port = process.env.PORT || 3000;
     this.env = process.env.NODE_ENV || 'development';
 
+    this.initializeEmailService();
     this.initializeMessageBroker();
     this.initializeMiddlewares();
     this.initializeRoutes(routes);
@@ -39,6 +41,10 @@ class App {
 
   public getServer() {
     return this.app;
+  }
+
+  private initializeEmailService() {
+    new EmailService();
   }
 
   private initializeMessageBroker() {

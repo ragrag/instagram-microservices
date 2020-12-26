@@ -5,9 +5,13 @@ import { CreateUserDTO, LoginUserDTO } from '../common/dtos';
 import { DataStoredInToken, TokenData } from '../common/interfaces/auth.interface';
 import { User } from '../entities/users.entity';
 import { isEmpty } from '../common/utils/util';
-import { eventEmitter, Events } from '../common/utils/eventEmitter';
+import { eventEmitter } from '../common/utils/eventEmitter';
 
 class AuthService {
+  private Events = {
+    USER_CREATED: 'UserCreated',
+  };
+
   public async signup(createUserDTO: CreateUserDTO): Promise<User> {
     if (isEmpty(createUserDTO)) throw Boom.badRequest();
 
@@ -26,7 +30,7 @@ class AuthService {
     }
     const hashedPassword = await bcrypt.hash(createUserDTO.password, 10);
     const createdUserData: User = await User.save({ ...createUserDTO, password: hashedPassword } as User);
-    eventEmitter.emit(Events.USER_CREATED, { email: createUserDTO.email });
+    eventEmitter.emit(this.Events.USER_CREATED, { email: createUserDTO.email });
     return createdUserData;
   }
 

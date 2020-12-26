@@ -1,8 +1,7 @@
 import { EventEmitter } from 'events';
 
-const Events = {
-  USER_CREATED: 'user-created',
-};
+//Events, can be local events or Kafka Producer topics
+
 const eventEmitter = new EventEmitter();
 
-export { eventEmitter, Events };
+export { eventEmitter };
