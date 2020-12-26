@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import * as _ from 'lodash';
 import { UpdateUserDTO, UpdateUserPasswordDTO } from '../common/dtos';
 import { RequestWithUser } from '../common/interfaces/auth.interface';
 import { User } from '../entities/users.entity';
@@ -9,7 +10,8 @@ class UsersController {
 
   public getUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      res.status(200).json({ ...req.user });
+      const userResponse = _.omit(req.user, ['password']);
+      res.status(200).json({ ...userResponse });
     } catch (error) {
       next(error);
     }

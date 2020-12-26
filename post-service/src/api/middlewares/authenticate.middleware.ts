@@ -10,7 +10,6 @@ async function authenticationMiddleware(req: Request, res: Response, next: NextF
         Authorization: req.headers.authorization,
       },
     });
-    console.log(authUserResponse);
     req.user = authUserResponse.data;
     next();
   } catch (err) {

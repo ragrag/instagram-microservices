@@ -61,6 +61,7 @@ class MessageBroker {
   public async sendEvent(eventDTO: KafkaEvent) {
     try {
       // this.emailQueue, Buffer.from(JSON.stringify(eventDTO))
+      logger.info(`sending \ntopic: ${eventDTO.topic} \nvalue:${JSON.parse(eventDTO.value)}`);
       await this.producer.send({ topic: eventDTO.topic, messages: [{ value: eventDTO.value }] });
     } catch (err) {
       logger.error(err);
