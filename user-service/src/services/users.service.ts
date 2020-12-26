@@ -24,7 +24,7 @@ class UserService {
 
   public async findUserById(userId: number): Promise<User> {
     const findUser: User = await User.findOne(userId);
-    if (!findUser) throw Boom.conflict();
+    if (!findUser) throw Boom.notFound();
 
     return findUser;
   }

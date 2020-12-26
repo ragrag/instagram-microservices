@@ -16,11 +16,10 @@ class MailGunClient implements EmailClient {
     try {
       await this.mailer.messages().send(
         {
-          from: 'Algomoon <no-reply@mail.algomoon.com>',
+          from: 'Instagram <no-reply@mail.algomoon.com>',
           to: email,
-          subject: 'Welcome to Algomoon',
-          template: 'welcome',
-          text: 'Welcome to the app!',
+          subject: 'Welcome to Instagram',
+          text: 'Welcome to the Instagram!',
         },
         (error, body) => {
           if (error) logger.error(error);

@@ -1,13 +1,13 @@
-import { Consumer, Kafka, Producer } from 'kafkajs';
+import { Admin, Consumer, Kafka, Producer } from 'kafkajs';
 import { KafkaEvent } from '../common/interfaces/kafkaEvent';
 import { logger } from '../common/utils/logger';
-import EventHandler from './eventHandler.service';
 
 class MessageBroker {
   private static instance: MessageBroker;
   private kafka: Kafka;
   private producer: Producer;
   private consumer: Consumer;
+  private admin: Admin;
 
   private constructor() {
     this.initializeConnection();
@@ -29,42 +29,34 @@ class MessageBroker {
       logger.info('kafka connected');
       await this.initializeProducer();
       await this.initializeConsumer();
+      // await this.initializeAdmin();
     } catch (err) {
       logger.error(err);
     }
   }
+
+  public async initializeAdmin() {
+    this.admin = this.kafka.admin();
+    await this.admin.connect();
+    await this.admin.createTopics({
+      topics: [
+        {
+          topic: 'user-created',
+          numPartitions: 1,
+        },
+      ],
+    });
+    await this.admin.disconnect();
+  }
+
   public async initializeProducer() {
     this.producer = this.kafka.producer({ allowAutoTopicCreation: true });
     await this.producer.connect();
   }
 
   public async initializeConsumer() {
-    this.consumer = this.kafka.consumer({ groupId: 'email-service', allowAutoTopicCreation: true });
+    this.consumer = this.kafka.consumer({ allowAutoTopicCreation: true, groupId: 'post-service' });
     await this.consumer.connect();
-
-    for (const [eventTopic] of EventHandler.events) {
-      await this.consumer.subscribe({ topic: eventTopic, fromBeginning: true });
-    }
-
-    await this.consumer.run({
-      eachBatchAutoResolve: false,
-      eachBatch: async ({ batch, resolveOffset, heartbeat, isRunning, isStale, uncommittedOffsets }) => {
-        for (const message of batch.messages) {
-          if (isStale) {
-          }
-          try {
-            console.log({
-              topic: batch.topic,
-              value: { ...JSON.parse(message.value.toString()) },
-            });
-            await EventHandler.handleEvent(batch.topic, { ...JSON.parse(message.value.toString()) });
-            resolveOffset(message.offset);
-          } catch (err) {
-            logger.error(`Failed to handle event\n ${err}\n topic:${batch.topic} \n value:${JSON.parse(message.value.toString())}`);
-          }
-        }
-      },
-    });
   }
   public async sendEvent(eventDTO: KafkaEvent) {
     try {
