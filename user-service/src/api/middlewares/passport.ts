@@ -15,7 +15,7 @@ passport.use(
     },
     async (payload: any, done: any) => {
       try {
-        const user = await User.findOne(payload.id);
+        const user = await User.findOne(payload.id, { relations: ['following', 'followers'] });
         if (user) {
           return done(null, user);
         }

@@ -1,0 +1,46 @@
+# auth API
+
+###
+# baseURL
+@baseURL = http://localhost:3000
+
+###
+# signup
+POST {{baseURL}}/signup
+Content-Type: application/json
+
+{
+    "email": "example@gmail.com",
+	"password": "qwer1234"
+}
+
+###
+# Login
+POST {{baseURL}}/login
+Content-Type: application/json
+
+{
+    "email": "example@gmail.com",
+	"password": "qwer1234"
+}
+
+
+###
+# Facebook Login
+POST {{baseURL}}/api/v1/oauth/facebook
+Content-Type: application/json
+
+{
+    "access_token": "EAALg3XvNS4cBAFpZCDzuqmZAoE1IsEeNiAWHATxVaT6t4VC2t3LKu01RRqbuamvWFJWv8NOj0wM0NVkh2Q414hBV1RZCubl9RHObUnZAo5rEudDnx2ADTjMAzmZCsby5t6j6SziaprLyrdmUjL8pAHLFcG5ZCZCmFq2kD4kAkDZA4NvCkUgzu4TqLPfJ7LJAkWDHZBegsSiP9dAZDZD"
+}
+
+
+###
+# Logout
+POST {{baseURL}}/logout
+Content-Type: application/json
+
+{
+    "email": "lim@gmail.com",
+	"password": "q1w2e3r4"
+}

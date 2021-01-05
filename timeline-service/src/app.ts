@@ -1,18 +1,18 @@
-import compression from 'compression';
+import 'reflect-metadata';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';
 import helmet from 'helmet';
 import hpp from 'hpp';
 import morgan from 'morgan';
-import 'reflect-metadata';
-import swaggerJSDoc from 'swagger-jsdoc';
+import compression from 'compression';
 import swaggerUi from 'swagger-ui-express';
+import swaggerJSDoc from 'swagger-jsdoc';
 import { createConnection } from 'typeorm';
-import errorMiddleware from './api/middlewares/error.middleware';
-import Routes from './common/interfaces/routes.interface';
-import { logger, stream } from './common/utils/logger';
 import dbConnection from './db/connection';
+import Routes from './common/interfaces/routes.interface';
+import errorMiddleware from './api/middlewares/error.middleware';
+import { logger, stream } from './common/utils/logger';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import MessageBrokerService from './services/messageBroker.service';
 

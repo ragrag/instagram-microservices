@@ -28,6 +28,28 @@ class UsersController {
     }
   };
 
+  public followUser = async (req: RequestWithUser, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const userId = Number(req.params.id);
+      await this.userService.followUser(req.user, userId);
+
+      res.status(200).json();
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public getFollowingIds = async (req: RequestWithUser, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const userId = Number(req.params.id);
+      const followingIds = await this.userService.getFollowingIds(userId);
+
+      res.status(200).json(followingIds);
+    } catch (error) {
+      next(error);
+    }
+  };
+
   public updateUser = async (req: RequestWithUser, res: Response, next: NextFunction): Promise<void> => {
     try {
       const userId = Number(req.user.id);

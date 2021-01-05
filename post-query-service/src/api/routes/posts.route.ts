@@ -1,9 +1,6 @@
 import { Router } from 'express';
-import PostsController from '../../controllers/posts.controller';
-import { CreatePostDTO } from '../../common/dtos';
 import Route from '../../common/interfaces/routes.interface';
-import authenticationMiddleware from '../middlewares/authenticate.middleware';
-import validationMiddleware from '../middlewares/validation.middleware';
+import PostsController from '../../controllers/posts.controller';
 
 class PostsRroute implements Route {
   public path = '/posts';
@@ -16,6 +13,9 @@ class PostsRroute implements Route {
 
   private initializeRoutes() {
     // this.router.post(`${this.path}`, [authenticationMiddleware, validationMiddleware(CreatePostDTO, 'body', true)], this.postsController.createPost);
+    this.router.get(`${this.path}/:id`, this.postsController.getPostById);
+    this.router.post(`${this.path}/users`, this.postsController.getPostsByUserIds);
+    // this.router.get(`${this.path}/:id`, this.postsController.getById);
   }
 }
 

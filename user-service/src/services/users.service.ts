@@ -5,6 +5,7 @@ import { eventEmitter } from '../common/utils/eventEmitter';
 import { User } from '../entities/users.entity';
 import { isEmpty } from '../common/utils/util';
 import MessageBrokerService from './messageBroker.service';
+import { getManager } from 'typeorm';
 
 class UserService {
   private Events = {
@@ -41,6 +42,27 @@ class UserService {
     return createdUser;
   }
 
+  public async followUser(user: User, userId: number): Promise<void> {
+    const findUser: User = await User.findOne(userId, { relations: ['following', 'followers'] });
+    if (!findUser) throw Boom.notFound("user doesn't exist");
+    if (user.following.findIndex(e => e.id === findUser.id) !== -1) throw Boom.conflict('Already following');
+    user.following.push(findUser);
+    findUser.followers.push(user);
+    await getManager().transaction(async transactionalEntityManager => {
+      await transactionalEntityManager.save(user);
+      await transactionalEntityManager.save(findUser);
+      // ...
+    });
+  }
+
+  public async getFollowingIds(userId: number): Promise<number[]> {
+    const findUser: User = await User.findOne(userId, { relations: ['following', 'followers'] });
+    if (!findUser) throw Boom.notFound("user doesn't exist");
+
+    const followingIds = findUser.following.map(e => e.id);
+    console.log(followingIds);
+    return followingIds;
+  }
   public async updateUser(userId: number, updateUserDTO: UpdateUserDTO): Promise<void> {
     if (isEmpty(updateUserDTO)) throw Boom.badRequest();
 
