@@ -5,7 +5,7 @@ COPY . ./app
 WORKDIR /app
 
 RUN npm install
- 
-EXPOSE 3009
+
+# EXPOSE 3009
 
 CMD ["npm", "start"]

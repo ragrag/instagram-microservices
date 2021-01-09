@@ -6,6 +6,6 @@ WORKDIR /app
 
 RUN npm install
 
-EXPOSE 3008
+# EXPOSE 3008
 
 CMD ["npm", "start"]
