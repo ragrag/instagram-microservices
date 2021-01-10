@@ -1,0 +1,48 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: timeline-dev-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: timeline
+  template:
+    metadata:
+      labels:
+        app: timeline 
+    spec:
+      containers:
+        - name: timeline
+          image: ragrag/insta-timeline-service
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: timeline-service
+  labels:
+    name: timeline
+spec:
+  selector:
+    app: timeline
+  type: ClusterIP
+  ports:
+    - port: 3009
+      name: timeline
+      protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: timeline-service-np
+  labels:
+    name: timeline
+spec:
+  selector:
+    app: timeline
+  type: NodePort
+  ports:
+    - port: 3009
+      nodePort: 30009
+      name: timeline
+      protocol: TCP

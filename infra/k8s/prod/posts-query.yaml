@@ -1,0 +1,48 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: post-query-dev-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: post-query
+  template:
+    metadata:
+      labels:
+        app: post-query 
+    spec:
+      containers:
+        - name: post-query
+          image: ragrag/insta-post-query-service
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: post-query-service
+  labels:
+    name: post-query
+spec:
+  selector:
+    app: post-query
+  type: ClusterIP
+  ports:
+    - port: 3007
+      name: post-query
+      protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: post-query-service-np
+  labels:
+    name: post-query
+spec:
+  selector:
+    app: post-query
+  type: NodePort
+  ports:
+    - port: 3007
+      nodePort: 30007
+      name: post-query
+      protocol: TCP
