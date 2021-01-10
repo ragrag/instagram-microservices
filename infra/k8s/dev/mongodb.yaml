@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: k8s-mongo
+  labels:
+    name: lbl-k8s-mongo
+spec:
+  containers:
+  - name: mongo
+    image: mongo:latest
+    env:
+    - name: MONGO_INITDB_ROOT_USERNAME
+      value: root
+    - name: MONGO_INITDB_ROOT_PASSWORD
+      value: root
+    ports:
+    - name: mongo
+      containerPort: 3306
+      protocol: TCP
+    volumeMounts:
+    - name: k8s-mongo-storage
+      mountPath: /var/lib/mongo
+  volumes:
+  - name: k8s-mongo-storage
+    emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-service
+  labels:
+    name: lbl-k8s-mongo
+spec:
+  ports:
+  - port: 27017
+  selector:
+    name: lbl-k8s-mongo
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-service-np
+  labels:
+    name: lbl-k8s-mongo
+spec:
+  ports:
+  - port: 27017
+    nodePort: 30071
+  selector:
+    name: lbl-k8s-mongo
+  type: NodePort

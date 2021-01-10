@@ -1,0 +1,49 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: email-dev-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: email
+  template:
+    metadata:
+      labels:
+        app: email 
+    spec:
+      containers:
+        - name: email
+          image: ragrag/insta-email-service
+          command: ["npm","run","dev"]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: email-service
+  labels:
+    name: email
+spec:
+  selector:
+    app: email
+  type: ClusterIP
+  ports:
+    - port: 3008
+      name: email
+      protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: email-service-np
+  labels:
+    name: email
+spec:
+  selector:
+    app: email
+  type: NodePort
+  ports:
+    - port: 3008
+      nodePort: 30008
+      name: email
+      protocol: TCP

@@ -15,6 +15,14 @@ const dbConnection: ConnectionOptions = {
     subscribersDir: 'src/subscribers',
   },
   migrationsRun: true,
+  extra: {
+    insecureAuth: true,
+  },
+  // host: 'http://mysql-service',
+  // port: 3306,
+  // username: 'root',
+  // password: 'root',
+  // database: 'instagram-post',
 };
 
 export = dbConnection;

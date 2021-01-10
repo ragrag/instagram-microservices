@@ -1,0 +1,49 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: posts-dev-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: posts
+  template:
+    metadata:
+      labels:
+        app: posts 
+    spec:
+      containers:
+        - name: posts
+          image: ragrag/insta-post-service
+          command: ["npm","run","dev"]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: posts-service
+  labels:
+    name: posts
+spec:
+  selector:
+    app: posts
+  type: ClusterIP
+  ports:
+    - port: 3006
+      name: posts
+      protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: posts-service-np
+  labels:
+    name: posts
+spec:
+  selector:
+    app: posts
+  type: NodePort
+  ports:
+    - port: 3006
+      nodePort: 30006
+      name: posts
+      protocol: TCP
