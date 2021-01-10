@@ -28,7 +28,7 @@ spec:
     app: post-query
   type: ClusterIP
   ports:
-    - port: 30007
+    - port: 3007
       name: post-query
       protocol: TCP
 ---

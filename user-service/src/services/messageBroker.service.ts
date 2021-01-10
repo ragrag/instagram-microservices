@@ -24,7 +24,7 @@ class MessageBroker {
     try {
       this.kafka = new Kafka({
         clientId: 'instagram',
-        brokers: ['localhost:9092'],
+        brokers: [process.env.KAFKA_URL],
       });
       logger.info('kafka connected');
       await this.initializeProducer();

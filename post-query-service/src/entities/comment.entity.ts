@@ -1,6 +1,6 @@
 import { BaseEntity, Entity, Column, CreateDateColumn, UpdateDateColumn, ObjectID, PrimaryColumn, ObjectIdColumn } from 'typeorm';
 
-@Entity()
+@Entity('Comment')
 export class Comment extends BaseEntity {
   @ObjectIdColumn()
   _id: ObjectID;

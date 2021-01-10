@@ -6,10 +6,58 @@ deploy:
       - ./infra/k8s/dev/*
 build:
   local:
-    push: true
+    push: false
   artifacts:
     - image: ragrag/insta-post-service
       context: post-service
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: 'src/**/*.ts'
+            dest: .
+          - src: '.env'
+            dest: .
+          - src: 'swagger.yaml'
+            dest: .
+    - image: ragrag/insta-user-service
+      context: user-service
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: 'src/**/*.ts'
+            dest: .
+          - src: '.env'
+            dest: .
+          - src: 'swagger.yaml'
+            dest: .
+    - image: ragrag/insta-timeline-service
+      context: timeline-service
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: 'src/**/*.ts'
+            dest: .
+          - src: '.env'
+            dest: .
+          - src: 'swagger.yaml'
+            dest: .
+    - image: ragrag/insta-post-query-service
+      context: post-query-service
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: 'src/**/*.ts'
+            dest: .
+          - src: '.env'
+            dest: .
+          - src: 'swagger.yaml'
+            dest: .
+    - image: ragrag/insta-email-service
+      context: email-service
       docker:
         dockerfile: Dockerfile
       sync:

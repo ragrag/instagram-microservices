@@ -5,7 +5,7 @@ import axios from 'axios';
 
 async function authenticationMiddleware(req: Request, res: Response, next: NextFunction) {
   try {
-    const authUserResponse = await axios.get('http://localhost:3005/api/v1/user', {
+    const authUserResponse = await axios.get('http://users-service:3005/api/v1/user', {
       headers: {
         Authorization: req.headers.authorization,
       },

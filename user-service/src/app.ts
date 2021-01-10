@@ -27,7 +27,7 @@ class App {
     this.env = process.env.NODE_ENV || 'development';
 
     this.connectToDatabase();
-    this.initializeRabbitMQ();
+    this.initializeKafka();
     this.initializeMiddlewares();
     this.initializeRoutes(routes);
     this.initializeSwagger();
@@ -54,7 +54,7 @@ class App {
       });
   }
 
-  private initializeRabbitMQ() {
+  private initializeKafka() {
     MessageBrokerService.getInstance();
   }
 

@@ -9,7 +9,7 @@ import compression from 'compression';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJSDoc from 'swagger-jsdoc';
 import { createConnection } from 'typeorm';
-import dbConnection from './db/connection';
+
 import Routes from './common/interfaces/routes.interface';
 import errorMiddleware from './api/middlewares/error.middleware';
 import { logger, stream } from './common/utils/logger';
@@ -26,8 +26,7 @@ class App {
     this.port = process.env.PORT || 3000;
     this.env = process.env.NODE_ENV || 'development';
 
-    this.connectToDatabase();
-    this.initializeRabbitMQ();
+    this.initializeKafka();
     this.initializeMiddlewares();
     this.initializeRoutes(routes);
     this.initializeSwagger();
@@ -44,17 +43,7 @@ class App {
     return this.app;
   }
 
-  private connectToDatabase() {
-    createConnection(dbConnection)
-      .then(() => {
-        logger.info('🟢 The database is connected.');
-      })
-      .catch((error: Error) => {
-        logger.error(`🔴 Unable to connect to the database: ${error}.`);
-      });
-  }
-
-  private initializeRabbitMQ() {
+  private initializeKafka() {
     MessageBrokerService.getInstance();
   }
 
